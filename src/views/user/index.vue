@@ -34,6 +34,7 @@
       type="primary"
       size="mini"
       style="margin-bottom: 10px"
+      @click="addUser"
     >添加</el-button>
     <el-table
       :data="tableData"
@@ -52,27 +53,35 @@
         <template slot-scope="scope">
           <el-button
             type="text"
+            @click="editUser(scope.row)"
           >编辑</el-button>
           <el-button
             type="text"
+            @click="deleteUser(scope.row)"
           >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <Pagination :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize" @pagination="toSeachTableData" />
+    <userEdit :visible.sync="dialogVisible" :row-info="currentRow" :type="dialogType" @refetchTable="toSeachTableData" />
   </div>
 </template>
 
 <script>
-import { fetchUserList } from '@/api/user.js'
+import { fetchUserList, delUser } from '@/api/user.js'
 import Pagination from '@/components/Pagination/index.vue'
+import userEdit from './components/userEdit.vue'
 export default {
   components: {
-    Pagination
+    Pagination,
+    userEdit
   },
   data() {
     return {
       tableLoading: false,
+      dialogVisible: false,
+      dialogType: 'add',
+      currentRow: {},
       total: 0,
       listQuery: {
         pageNum: 1,
@@ -116,6 +125,31 @@ export default {
         this.total = res.total
       }).finally(() => {
         this.tableLoading = false
+      })
+    },
+    addUser() {
+      this.dialogVisible = true
+      this.dialogType = 'add'
+    },
+    editUser(row) {
+      this.dialogVisible = true
+      this.dialogType = 'edit'
+      this.currentRow = JSON.parse(JSON.stringify(row))
+    },
+    deleteUser(row) {
+      this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        delUser({ id: row.id }).then(res => {
+          if (res.code !== 200) return
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.toSeachTableData()
+        })
       })
     }
   }

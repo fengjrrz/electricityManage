@@ -31,3 +31,18 @@ export function fetchUserList(data) {
     data
   })
 }
+
+export function modifyUser(data) {
+  return request({
+    url: '/user/modify',
+    method: 'post',
+    data
+  })
+}
+export function delUser(params) {
+  return request({
+    url: '/user/delete',
+    method: 'get',
+    params
+  })
+}
