@@ -22,3 +22,12 @@ export function logout() {
     method: 'post'
   })
 }
+
+//! 以下是用户管理模块的接口
+export function fetchUserList(data) {
+  return request({
+    url: '/user/list',
+    method: 'post',
+    data
+  })
+}
