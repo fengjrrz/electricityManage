@@ -39,6 +39,7 @@
     <el-table
       :data="tableData"
       border
+      :height="tableHeight"
       :header-cell-style="{
         background: '#FFFFFF',
         height: '40px',
@@ -83,6 +84,7 @@ export default {
       dialogType: 'add',
       currentRow: {},
       total: 0,
+      tableHeight: 300,
       listQuery: {
         pageNum: 1,
         pageSize: 20
@@ -125,6 +127,7 @@ export default {
         this.total = res.total
       }).finally(() => {
         this.tableLoading = false
+        this.setTableHeight()
       })
     },
     addUser() {
@@ -151,6 +154,9 @@ export default {
           this.toSeachTableData()
         })
       })
+    },
+    setTableHeight() {
+      this.tableHeight = document.querySelector('#app').clientHeight - document.querySelector('.search-part').clientHeight - 195
     }
   }
 }
